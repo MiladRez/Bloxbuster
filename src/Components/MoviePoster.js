@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from 'react-router-dom';
-import MovieInfo from "./MovieInfo";
 
 const MovieData = {
     batmanBegins: {
@@ -60,16 +59,16 @@ const MoviePoster = (props) => {
 
     return (
         <div className="column">
-            <div className="ui segment">
+            <div className="ui segment" style={{backgroundColor: "#3d8bff"}}>
                 <Link to={{pathname: '/movieInfo', movieProps: {film_name: props.featuredFilm}}}><img src={moviePoster} alt="Movie Poster" width="327px" height="450px"></img></Link>
 
                 <div style={{paddingTop: "10px", paddingLeft: "5px"}}>
-                    <i className="eye icon" style={{fontSize: "20px", display: "inline"}}> {watched}</i>
+                    <i className="eye icon" style={{fontSize: "20px", display: "inline", color: "white"}}><span style={{fontFamily: "Lato"}}> {watched}</span></i>
 
-                    <i className="heart icon" style={{fontSize: "20px", marginLeft: "20px", display: "inline"}}> {liked}</i>
+                    <i className="heart icon" style={{fontSize: "20px", marginLeft: "20px", display: "inline", color: "white"}}><span style={{fontFamily: "Lato"}}> {liked}</span></i>
 
                     <div style={{display: "inline", float: "right"}}>
-                        {rating}
+                        <span style={{color: "white"}}> {rating}</span>
                     </div>
                     
                 </div>

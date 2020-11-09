@@ -86,12 +86,16 @@ const MovieInfo = (props) => {
         alert("Your rating for this movie has been saved!");
     };
 
+    const onLanguageChange = (lang) => {
+        console.log(lang)
+    }
+
     return (
         <div style={{backgroundColor: "black"}}>
 
             <div className="ui container">
                 <h1 style={{ paddingTop: "30px", paddingBottom: "30px", color: "#3d8bff" }}>Blox<span style={{ color: "white" }}>buster</span></h1>
-                <SearchBar label={"Film Search"} />
+                <SearchBar onLanguageChange={onLanguageChange} label={"Film Search"} />
             </div>
 
             <NavBar pageHeader="Movie Info"></NavBar>

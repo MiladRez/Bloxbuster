@@ -5,146 +5,70 @@ import SearchBar from './SearchBar';
 
 class Films extends React.Component {
 
-    state = { films: ["Batman Begins", "Dark Knight", "Dark Knight Rises", "Interstellar", "Inception", "Tenet"], selectedFilm: null, english: true };
+    state = { language: "english" };
 
-    onFilmSearchSubmit = (film) => {
-
-        if (this.state.films.includes(film)) {
-
-            if (film === "Batman Begins") {
-                this.setState({selectedFilm: "batmanBegins"});
-            } else if (film === "Dark Knight") {
-                this.setState({selectedFilm: "darkKnight"});
-            } else if (film === "Dark Knight Rises") {
-                this.setState({selectedFilm: "darkKnightRises"});
-            } else if (film === "Interstellar") {
-                this.setState({selectedFilm: "interstellar"});
-            } else if (film === "Inception") {
-                this.setState({selectedFilm: "inception"});
-            } else {
-                this.setState({selectedFilm: "tenet"});
-            }
+    onLanguageChange = (lang) => {
+        if (lang === "English") {
+            this.setState({language: "english"});
+        } else {
+            this.setState({language: "spanish"});
         }
-    }
-
-    changeLangEnglish = () => {
-        this.setState({english: true});
-    }
-
-    changeLangSpanish = () => {
-        this.setState({english: false});
     }
 
     render() {
+        console.log("From Films.js: " + this.state.english);
 
-        if (this.state.selectedFilm) {
-            return (
-                <div style={{backgroundColor: "black"}}>
+        // ENGLISH VERSION
+        var langChangeEnglish = "English";
+        var langChangeSpanish = "Spanish";
+        var searchBarLabel = "Film Search";
+        var navbarHeader = "Films Page";
+        var header1 = "New Releases";
+        var header2 = "Top Films of the Week";
 
-                    <div className="ui container">
-                        <h1 style={{ paddingTop: "30px", paddingBottom: "30px", color: "#3d8bff" }}>Blox<span style={{ color: "white" }}>buster</span></h1>
-                        <SearchBar onFilmSearchSubmit={this.onFilmSearchSubmit} label={"Film Search"} />
-                    </div>
+        if (this.state.language === "spanish") {
+            // SPANISH VERSION
+            langChangeEnglish = "Inglés";
+            langChangeSpanish = "Español";
+            searchBarLabel = "Búsqueda de Películas";
+            navbarHeader = "Página de Películas";
+            header1 = "Nuevos Lanzamientos";
+            header2 = "Mejores Películas de la Semana";
+        }
 
-                    <NavBar pageHeader="Films Page"></NavBar>
+        return (
+            <div style={{backgroundColor: "black"}}>
+                <SearchBar onLanguageChange={this.onLanguageChange} label={searchBarLabel} />
+                
+                <NavBar pageHeader={navbarHeader} lang={this.state.language}></NavBar>
 
-                    <div className="ui container" style={{marginTop: "60px"}}>
-                        <h3 style={{color: "white"}}>Found:</h3>
+                <div className="ui container" style={{marginTop: "60px"}}>
+                    <h3 style={{color: "white"}}>{header1}</h3>
 
-                        <div className="ui three column grid">
-                            <MoviePoster featuredFilm={this.state.selectedFilm} />
-                        </div>
+                    <div className="ui three column grid">
+                        <MoviePoster featuredFilm="batmanBegins" />
 
+                        <MoviePoster featuredFilm="darkKnight" />
+
+                        <MoviePoster featuredFilm="darkKnightRises" />
                     </div>
 
                 </div>
-            );
-        } else {
 
-            if (this.state.english) {
-                // ENGLISH VERSION
-                return (
-                    <div style={{backgroundColor: "black"}}>
+                <div className="ui container" style={{marginTop: "60px"}}>
+                    <h3 style={{color: "white"}}>{header2}</h3>
 
-                        <div className="ui container">
-                            <h1 style={{ paddingTop: "30px", paddingBottom: "30px", color: "#3d8bff" }}>Blox<span style={{ color: "white" }}>buster</span></h1>
-                            <button className="ui left attached button" style={{marginLeft: "970px"}} onClick={this.changeLangEnglish}>English</button>
-                            <button className="right attached ui button" style={{textAlign: "right"}} onClick={this.changeLangSpanish}>Spanish</button>
-                            <SearchBar onFilmSearchSubmit={this.onFilmSearchSubmit} label={"Film Search"} />
-                        </div>
-                        
-                        <NavBar pageHeader="Films Page"></NavBar>
+                    <div className="ui three column grid">
+                        <MoviePoster featuredFilm="interstellar" />
 
-                        <div className="ui container" style={{marginTop: "60px"}}>
-                            <h3 style={{color: "white"}}>New Releases</h3>
+                        <MoviePoster featuredFilm="inception" />
 
-                            <div className="ui three column grid">
-                                <MoviePoster featuredFilm="batmanBegins" />
-
-                                <MoviePoster featuredFilm="darkKnight" />
-
-                                <MoviePoster featuredFilm="darkKnightRises" />
-                            </div>
-
-                        </div>
-
-                        <div className="ui container" style={{marginTop: "60px"}}>
-                            <h3 style={{color: "white"}}>Top Films of the Week</h3>
-
-                            <div className="ui three column grid">
-                                <MoviePoster featuredFilm="interstellar" />
-
-                                <MoviePoster featuredFilm="inception" />
-
-                                <MoviePoster featuredFilm="tenet" />
-                            </div>
-
-                        </div>
+                        <MoviePoster featuredFilm="tenet" />
                     </div>
-                );
-            } else {
-                // SPANISH VERSION
-                return (
-                    <div style={{backgroundColor: "black"}}>
 
-                        <div className="ui container">
-                            <h1 style={{ paddingTop: "30px", paddingBottom: "30px", color: "#3d8bff" }}>Blox<span style={{ color: "white" }}>buster</span></h1>
-                            <button className="ui left attached button" style={{marginLeft: "970px"}} onClick={this.changeLangEnglish}>Inglés</button>
-                            <button className="right attached ui button" style={{textAlign: "right"}} onClick={this.changeLangSpanish}>Español</button>
-                            <SearchBar onFilmSearchSubmit={this.onFilmSearchSubmit} label={"Búsqueda de Películas"} />
-                        </div>
-                        
-                        <NavBar pageHeader="Página de Películas" lang={"spanish"}></NavBar>
-
-                        <div className="ui container" style={{marginTop: "60px"}}>
-                            <h3 style={{color: "white"}}>Nuevos Lanzamientos</h3>
-
-                            <div className="ui three column grid">
-                                <MoviePoster featuredFilm="batmanBegins" />
-
-                                <MoviePoster featuredFilm="darkKnight" />
-
-                                <MoviePoster featuredFilm="darkKnightRises" />
-                            </div>
-
-                        </div>
-
-                        <div className="ui container" style={{marginTop: "60px"}}>
-                            <h3 style={{color: "white"}}>Mejores Películas de la Semana</h3>
-
-                            <div className="ui three column grid">
-                                <MoviePoster featuredFilm="interstellar" />
-
-                                <MoviePoster featuredFilm="inception" />
-
-                                <MoviePoster featuredFilm="tenet" />
-                            </div>
-
-                        </div>
-                    </div>
-                );
-            }  
-        }
+                </div>
+            </div>
+        );
     }
 }
 

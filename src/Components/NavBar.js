@@ -2,39 +2,37 @@ import React from 'react';
 
 const NavBar = (props) => {
 
-    if (props.lang === "spanish") {
-        return (
-            <div>
-                <center><h2 style={{marginTop: "60px", color: "white"}}>{props.pageHeader}</h2></center>
-    
-                <div className="ui container" style={{marginTop: "20px"}}>
-                    <div className="ui five item menu" style={{backgroundColor: "#3d8bff"}}>
-                        <a className="item" href="/account">Cuenta</a>
-                        <a className="item" href="/">Películas</a>
-                        <a className="item" href="/lists">Liza</a>
-                        <a className="item" href="/people">Personas</a>
-                        <a className="item" href="/help">Ayuda</a>
-                    </div>
-                </div>
-            </div>
-        );
-    } else {
-        return (
-            <div>
-                <center><h2 style={{marginTop: "60px", color: "white"}}>{props.pageHeader}</h2></center>
+    // ENGLISH VERSION
+    var a1 = "Account";
+    var a2 = "Films";
+    var a3 = "Lists";
+    var a4 = "People";
+    var a5 = "Help";
 
-                <div className="ui container" style={{marginTop: "20px"}}>
-                    <div className="ui five item menu" style={{backgroundColor: "#3d8bff"}}>
-                        <a className="item" href="/account">Account</a>
-                        <a className="item" href="/">Films</a>
-                        <a className="item" href="/lists">Lists</a>
-                        <a className="item" href="/people">People</a>
-                        <a className="item" href="/help">Help</a>
-                    </div>
+    if (props.lang === "spanish") {
+        // SPANISH VERSION
+        a1 = "Cuenta";
+        a2 = "Películas";
+        a3 = "Liza";
+        a4 = "Personas";
+        a5 = "Ayuda";
+    }
+
+    return (
+        <div>
+            <center><h2 style={{marginTop: "60px", color: "white"}}>{props.pageHeader}</h2></center>
+
+            <div className="ui container" style={{marginTop: "20px"}}>
+                <div className="ui five item menu" style={{backgroundColor: "#3d8bff"}}>
+                    <a className="item" href="/account">{a1}</a>
+                    <a className="item" href="/">{a2}</a>
+                    <a className="item" href="/lists">{a3}</a>
+                    <a className="item" href="/people">{a4}</a>
+                    <a className="item" href="/help">{a5}</a>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 export default NavBar;
