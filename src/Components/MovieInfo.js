@@ -93,10 +93,7 @@ const MovieInfo = (props) => {
     return (
         <div style={{backgroundColor: "black"}}>
 
-            <div className="ui container">
-                <h1 style={{ paddingTop: "30px", paddingBottom: "30px", color: "#3d8bff" }}>Blox<span style={{ color: "white" }}>buster</span></h1>
-                <SearchBar onLanguageChange={onLanguageChange} label={"Film Search"} />
-            </div>
+            <SearchBar onLanguageChange={onLanguageChange} />
 
             <NavBar pageHeader="Movie Info"></NavBar>
 

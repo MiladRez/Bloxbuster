@@ -3,52 +3,71 @@ import SearchBar from "./SearchBar";
 import NavBar from "./NavBar";
 import MoviePoster from "./MoviePoster";
 
-const FoundFilm = (props) => {
-    var films = ["batman begins", "dark knight", "dark knight rises", "interstellar", "inception", "tenet"];
-    var selectedFilm = null;
-    var film = props.location.state;
+class FoundFilm extends React.Component {
 
-    if (films.includes(film)) {
-        if (film === "batman begins") {
-            selectedFilm = "batmanBegins";
-        } else if (film === "dark knight") {
-            selectedFilm = "darkKnight";
-        } else if (film === "dark knight rises") {
-            selectedFilm = "darkKnightRises";
-        } else if (film === "interstellar") {
-            selectedFilm = "interstellar";
-        } else if (film === "inception") {
-            selectedFilm = "inception";
-        } else {
-            selectedFilm = "tenet";
+    constructor(props) {
+        super(props);
+        this.state = { language: "English" };
+
+        this.films = ["batman begins", "dark knight", "dark knight rises", "interstellar", "inception", "tenet"];
+        this.selectedFilm = null;
+        this.film = props.location.state;
+    
+        if (this.films.includes(this.film)) {
+            if (this.film === "batman begins") {
+                this.selectedFilm = "batmanBegins";
+            } else if (this.film === "dark knight") {
+                this.selectedFilm = "darkKnight";
+            } else if (this.film === "dark knight rises") {
+                this.selectedFilm = "darkKnightRises";
+            } else if (this.film === "interstellar") {
+                this.selectedFilm = "interstellar";
+            } else if (this.film === "inception") {
+                this.selectedFilm = "inception";
+            } else {
+                this.selectedFilm = "tenet";
+            }
         }
     }
 
-    const onLanguageChange = (lang) => {
-        console.log(lang)
+    onLanguageChange = (lang) => {
+        if (lang === "English") {
+            this.setState({language: "English"});
+        } else {
+            this.setState({language: "Spanish"});
+        }
     }
 
-    return (
-        <div style={{backgroundColor: "black"}}>
+    render() {
+        // ENGLISH VERSION
+        var navbarHeader = "Films Search";
+        var header1 = "Found";
 
-            <div className="ui container">
-                <h1 style={{ paddingTop: "30px", paddingBottom: "30px", color: "#3d8bff" }}>Blox<span style={{ color: "white" }}>buster</span></h1>
-                <SearchBar onLanguageChange={onLanguageChange} label={"Film Search"} />
-            </div>
+        if (this.state.language === "Spanish") {
+            // SPANISH VERSION
+            navbarHeader = "Búsqueda de Películas";
+            header1 = "Encontró";
+        }
 
-            <NavBar pageHeader="Film Search"></NavBar>
+        return (
+            <div style={{backgroundColor: "black"}}>
 
-            <div className="ui container" style={{marginTop: "60px"}}>
-                <h3 style={{color: "white"}}>Found:</h3>
+                <SearchBar onLanguageChange={this.onLanguageChange} />
 
-                <div className="ui three column grid">
-                    <MoviePoster featuredFilm={selectedFilm} />
+                <NavBar pageHeader={navbarHeader} lang={this.state.language}></NavBar>
+
+                <div className="ui container" style={{marginTop: "60px"}}>
+                    <h3 style={{color: "white"}}>{header1}:</h3>
+
+                    <div className="ui three column grid">
+                        <MoviePoster featuredFilm={this.selectedFilm} />
+                    </div>
+
                 </div>
 
             </div>
-
-        </div>
-    );
-};
+        );
+    }
+}
 
 export default FoundFilm;

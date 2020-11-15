@@ -63,12 +63,12 @@ const MoviePoster = (props) => {
                 <Link to={{pathname: '/movieInfo', movieProps: {film_name: props.featuredFilm}}}><img src={moviePoster} alt="Movie Poster" width="327px" height="450px"></img></Link>
 
                 <div style={{paddingTop: "10px", paddingLeft: "5px"}}>
-                    <i className="eye icon" style={{fontSize: "20px", display: "inline", color: "white"}}><span style={{fontFamily: "Lato"}}> {watched}</span></i>
+                    <i className={`eye icon fontColor${props.theme}`} style={{fontSize: "20px", display: "inline"}}><span style={{fontFamily: "Lato"}}> {watched}</span></i>
 
-                    <i className="heart icon" style={{fontSize: "20px", marginLeft: "20px", display: "inline", color: "white"}}><span style={{fontFamily: "Lato"}}> {liked}</span></i>
+                    <i className={`heart icon fontColor${props.theme}`} style={{fontSize: "20px", marginLeft: "20px", display: "inline"}}><span style={{fontFamily: "Lato"}}> {liked}</span></i>
 
                     <div style={{display: "inline", float: "right"}}>
-                        <span style={{color: "white"}}> {rating}</span>
+                        <span className={`fontColor${props.theme}`}> {rating}</span>
                     </div>
                     
                 </div>

@@ -9,7 +9,7 @@ const NavBar = (props) => {
     var a4 = "People";
     var a5 = "Help";
 
-    if (props.lang === "spanish") {
+    if (props.lang === "Spanish") {
         // SPANISH VERSION
         a1 = "Cuenta";
         a2 = "Películas";
@@ -20,7 +20,7 @@ const NavBar = (props) => {
 
     return (
         <div>
-            <center><h2 style={{marginTop: "60px", color: "white"}}>{props.pageHeader}</h2></center>
+            <center><h2 className={`fontColor${props.theme}`} style={{marginTop: "60px"}}>{props.pageHeader}</h2></center>
 
             <div className="ui container" style={{marginTop: "20px"}}>
                 <div className="ui five item menu" style={{backgroundColor: "#3d8bff"}}>

@@ -2,68 +2,69 @@ import React from 'react';
 import MoviePoster from './MoviePoster';
 import NavBar from './NavBar';
 import SearchBar from './SearchBar';
+import "../Styles/Theme.css";
 
 class Films extends React.Component {
 
-    state = { language: "english" };
+    state = { language: "English", theme: "Light" };
+
+    toggleDarkMode = (theme) => {
+        if (theme === "Light") {
+            this.setState({theme: "Light"});
+        } else {
+            this.setState({theme: "Dark"});
+        }
+    }
 
     onLanguageChange = (lang) => {
         if (lang === "English") {
-            this.setState({language: "english"});
+            this.setState({language: "English"});
         } else {
-            this.setState({language: "spanish"});
+            this.setState({language: "Spanish"});
         }
     }
 
     render() {
-        console.log("From Films.js: " + this.state.english);
-
         // ENGLISH VERSION
-        var langChangeEnglish = "English";
-        var langChangeSpanish = "Spanish";
-        var searchBarLabel = "Film Search";
         var navbarHeader = "Films Page";
         var header1 = "New Releases";
         var header2 = "Top Films of the Week";
 
-        if (this.state.language === "spanish") {
+        if (this.state.language === "Spanish") {
             // SPANISH VERSION
-            langChangeEnglish = "Inglés";
-            langChangeSpanish = "Español";
-            searchBarLabel = "Búsqueda de Películas";
             navbarHeader = "Página de Películas";
             header1 = "Nuevos Lanzamientos";
             header2 = "Mejores Películas de la Semana";
         }
 
         return (
-            <div style={{backgroundColor: "black"}}>
-                <SearchBar onLanguageChange={this.onLanguageChange} label={searchBarLabel} />
+            <div className={`bgColor${this.state.theme}`} >
+                <SearchBar toggleDarkMode={this.toggleDarkMode} onLanguageChange={this.onLanguageChange} />
                 
-                <NavBar pageHeader={navbarHeader} lang={this.state.language}></NavBar>
+                <NavBar pageHeader={navbarHeader} lang={this.state.language} theme={this.state.theme}></NavBar>
 
                 <div className="ui container" style={{marginTop: "60px"}}>
-                    <h3 style={{color: "white"}}>{header1}</h3>
+                    <h3 className={`fontColor${this.state.theme}`}>{header1}</h3>
 
                     <div className="ui three column grid">
-                        <MoviePoster featuredFilm="batmanBegins" />
+                        <MoviePoster featuredFilm="batmanBegins" theme={this.state.theme} />
 
-                        <MoviePoster featuredFilm="darkKnight" />
+                        <MoviePoster featuredFilm="darkKnight" theme={this.state.theme} />
 
-                        <MoviePoster featuredFilm="darkKnightRises" />
+                        <MoviePoster featuredFilm="darkKnightRises" theme={this.state.theme} />
                     </div>
 
                 </div>
 
                 <div className="ui container" style={{marginTop: "60px"}}>
-                    <h3 style={{color: "white"}}>{header2}</h3>
+                    <h3 className={`fontColor${this.state.theme}`}>{header2}</h3>
 
                     <div className="ui three column grid">
-                        <MoviePoster featuredFilm="interstellar" />
+                        <MoviePoster featuredFilm="interstellar" theme={this.state.theme} />
 
-                        <MoviePoster featuredFilm="inception" />
+                        <MoviePoster featuredFilm="inception" theme={this.state.theme} />
 
-                        <MoviePoster featuredFilm="tenet" />
+                        <MoviePoster featuredFilm="tenet" theme={this.state.theme} />
                     </div>
 
                 </div>
