@@ -2,69 +2,86 @@ import React from 'react';
 import MoviePoster from './MoviePoster';
 import NavBar from './NavBar';
 import SearchBar from './SearchBar';
-import "../Styles/Theme.css";
 
 class Films extends React.Component {
 
-    state = { language: "English", theme: "Light" };
+    state = { language: "English", darkMode: false, newReleases: [], popular: [] };
 
-    toggleDarkMode = (theme) => {
-        if (theme === "Light") {
-            this.setState({theme: "Light"});
-        } else {
-            this.setState({theme: "Dark"});
-        }
+    componentDidUpdate() {
+        localStorage.setItem("dark", this.state.darkMode);
+    }
+
+    componentDidMount() {
+        const isReturningUser = "dark" in localStorage;
+        const savedMode = localStorage.getItem("dark") === "true" ? true : false;
+
+        this.setState({darkMode: isReturningUser ? savedMode : false})
+
+		// make list for new film releases to display using fetch
+        fetch("https://api.themoviedb.org/3/movie/now_playing?" + new URLSearchParams({
+            api_key: process.env.REACT_APP_TMDB_API_KEY
+        }))
+        .then(response => response.json())
+        .then((responseData) => {
+			this.setState({ newReleases: responseData.results.slice(0, 3) })
+        }).catch(error => console.log(error));
+		
+		fetch("https://api.themoviedb.org/3/movie/top_rated?" + new URLSearchParams({
+			api_key: process.env.REACT_APP_TMDB_API_KEY
+		}))
+			.then(response => response.json())
+			.then((responseData) => {
+			this.setState({ popular: responseData.results.slice(0,3) })
+		})
+    }
+
+    toggleDarkMode = (darkMode) => {
+        this.setState({darkMode: darkMode})
     }
 
     onLanguageChange = (lang) => {
-        if (lang === "English") {
-            this.setState({language: "English"});
-        } else {
-            this.setState({language: "Spanish"});
-        }
+        this.setState({language: lang})
     }
 
     render() {
         // ENGLISH VERSION
         var navbarHeader = "Films Page";
         var header1 = "New Releases";
-        var header2 = "Top Films of the Week";
+        var header2 = "Popular";
 
         if (this.state.language === "Spanish") {
             // SPANISH VERSION
             navbarHeader = "Página de Películas";
             header1 = "Nuevos Lanzamientos";
-            header2 = "Mejores Películas de la Semana";
+            header2 = "Popular";
         }
 
+        var fontColor = this.state.darkMode ? "fontColorDark" : "fontColorLight";
+
         return (
-            <div className={`bgColor${this.state.theme}`} >
+            <div className={this.state.darkMode ? "bgColorDark" : "bgColorLight"} >
                 <SearchBar toggleDarkMode={this.toggleDarkMode} onLanguageChange={this.onLanguageChange} />
                 
-                <NavBar pageHeader={navbarHeader} lang={this.state.language} theme={this.state.theme}></NavBar>
+                <NavBar pageHeader={navbarHeader} lang={this.state.language} darkMode={this.state.darkMode} />
 
                 <div className="ui container" style={{marginTop: "60px"}}>
-                    <h3 className={`fontColor${this.state.theme}`}>{header1}</h3>
+                    <h3 className={fontColor}>{header1}</h3>
 
-                    <div className="ui three column grid">
-                        <MoviePoster featuredFilm="batmanBegins" theme={this.state.theme} />
-
-                        <MoviePoster featuredFilm="darkKnight" theme={this.state.theme} />
-
-                        <MoviePoster featuredFilm="darkKnightRises" theme={this.state.theme} />
+					<div className="ui three column grid">
+						{this.state.newReleases.map((movie, index) => {
+							return <MoviePoster key={index} featuredFilm={movie} darkMode={this.state.darkMode} />
+						})}
                     </div>
 
                 </div>
 
                 <div className="ui container" style={{marginTop: "60px"}}>
-                    <h3 className={`fontColor${this.state.theme}`}>{header2}</h3>
+                    <h3 className={fontColor}>{header2}</h3>
 
-                    <div className="ui three column grid">
-                        <MoviePoster featuredFilm="interstellar" theme={this.state.theme} />
-
-                        <MoviePoster featuredFilm="inception" theme={this.state.theme} />
-
-                        <MoviePoster featuredFilm="tenet" theme={this.state.theme} />
+					<div className="ui three column grid">
+						{this.state.popular.map((movie, index) => {
+							return <MoviePoster key={index} featuredFilm={movie} darkMode={this.state.darkMode} />
+						})}
                     </div>
 
                 </div>

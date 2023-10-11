@@ -7,27 +7,34 @@ class FoundFilm extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { language: "English" };
+        this.state = { language: "English", darkMode: false, foundFilms: [] };
 
-        this.films = ["batman begins", "dark knight", "dark knight rises", "interstellar", "inception", "tenet"];
-        this.selectedFilm = null;
-        this.film = props.location.state;
-    
-        if (this.films.includes(this.film)) {
-            if (this.film === "batman begins") {
-                this.selectedFilm = "batmanBegins";
-            } else if (this.film === "dark knight") {
-                this.selectedFilm = "darkKnight";
-            } else if (this.film === "dark knight rises") {
-                this.selectedFilm = "darkKnightRises";
-            } else if (this.film === "interstellar") {
-                this.selectedFilm = "interstellar";
-            } else if (this.film === "inception") {
-                this.selectedFilm = "inception";
-            } else {
-                this.selectedFilm = "tenet";
-            }
-        }
+        this.TMDB_API_KEY = "c8525074a7268bfec0dd21eafcf7dc57";
+    }
+
+    componentDidUpdate(prevProps) {
+        localStorage.setItem("dark", this.state.darkMode);
+    }
+
+    componentDidMount() {
+        const isReturningUser = "dark" in localStorage;
+        const savedMode = localStorage.getItem("dark") === "true" ? true : false;
+
+        this.setState({darkMode: isReturningUser ? savedMode : false})
+
+        fetch("https://api.themoviedb.org/3/search/movie?" + new URLSearchParams({
+            api_key: this.TMDB_API_KEY,
+            query: this.props.location.state
+        }))
+        .then(response => response.json())
+        .then((responseData) => {
+            this.setState({foundFilms: responseData.results})
+        })
+        .catch(error => console.log(error));
+    }
+
+    toggleDarkMode = (darkMode) => {
+        this.setState({darkMode: darkMode})
     }
 
     onLanguageChange = (lang) => {
@@ -38,7 +45,20 @@ class FoundFilm extends React.Component {
         }
     }
 
+    submitSearch = (film) => {
+        fetch("https://api.themoviedb.org/3/search/movie?" + new URLSearchParams({
+            api_key: this.TMDB_API_KEY,
+            query: film
+        }))
+        .then(response => response.json())
+        .then((responseData) => {
+            this.setState({foundFilms: responseData.results})
+        })
+        .catch(error => console.log(error));
+    }
+
     render() {
+        
         // ENGLISH VERSION
         var navbarHeader = "Films Search";
         var header1 = "Found";
@@ -49,18 +69,23 @@ class FoundFilm extends React.Component {
             header1 = "Encontró";
         }
 
+        const listFoundFilms = this.state.foundFilms.map((film) => {
+            var filmKey = film.id;
+            return <MoviePoster key={filmKey} featuredFilm={film} darkMode={this.state.darkMode} />
+        });
+
         return (
-            <div style={{backgroundColor: "black"}}>
+            <div className={this.state.darkMode ? "bgColorDark" : "bgColorLight"}>
 
-                <SearchBar onLanguageChange={this.onLanguageChange} />
+                <SearchBar onLanguageChange={this.onLanguageChange} toggleDarkMode={this.toggleDarkMode} submitSearch={this.submitSearch} />
 
-                <NavBar pageHeader={navbarHeader} lang={this.state.language}></NavBar>
+                <NavBar pageHeader={navbarHeader} lang={this.state.language} darkMode={this.state.darkMode} />
 
                 <div className="ui container" style={{marginTop: "60px"}}>
-                    <h3 style={{color: "white"}}>{header1}:</h3>
+                    <h3 className={this.state.darkMode ? "fontColorDark" : "fontColorLight"}>{header1}:</h3>
 
                     <div className="ui three column grid">
-                        <MoviePoster featuredFilm={this.selectedFilm} />
+                        {listFoundFilms}
                     </div>
 
                 </div>

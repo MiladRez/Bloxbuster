@@ -4,143 +4,175 @@ import NavBar from './NavBar';
 import ReactStars from 'react-rating-stars-component';
 import SearchBar from './SearchBar';
 
-const MovieInfo = (props) => {
+class MovieInfo extends React.Component {
 
-    var movieName = "";
+    constructor(props) {
+        super(props);
 
-    if (props.location.movieProps === undefined) {
-        movieName = "darkKnight";
-    } else {
-        movieName = props.location.movieProps.film_name;
+        this.state = { darkMode: false, film: "", listOfGenres: [], cast: [], directors: [] };
     }
 
-    var film_name = "";
-    var genre = "";
-    var film_desc = "";
-    
-    var actors_cast = "";
-    var directors = "";
-
-    if (movieName === "batmanBegins") {
-        film_name = "Batman Begins";
-        genre = "Action/Superhero";
-        film_desc = `A young Bruce Wayne (Christian Bale) travels to the Far East, 
-                    where he's trained in the martial arts by Henri Ducard (Liam Neeson), 
-                    a member of the mysterious League of Shadows. When Ducard reveals the League's true purpose 
-                    -- the complete destruction of Gotham City -- Wayne returns to Gotham intent on cleaning up 
-                    the city without resorting to murder. With the help of Alfred (Michael Caine), his loyal butler, 
-                    and Lucius Fox (Morgan Freeman), a tech expert at Wayne Enterprises, Batman is born.`;
-        
-        actors_cast = "Christian Bale, Morgan Freeman, Liam Neeson, Michael Caine";
-        directors="Christopher Nolan";
-    } else if (movieName === "darkKnight") {
-        film_name = "Dark Knight";
-        genre = "Action/Superhero";
-        film_desc = `With the help of allies Lt. Jim Gordon (Gary Oldman) and DA Harvey Dent (Aaron Eckhart), 
-                    Batman (Christian Bale) has been able to keep a tight lid on crime in Gotham City. But when a vile young 
-                    criminal calling himself the Joker (Heath Ledger) suddenly throws the town into chaos, the caped Crusader 
-                    begins to tread a fine line between heroism and vigilantism.`;
-        
-        actors_cast = "Christian Bale, Aaron Eckhart, Gary Oldman, Michael Caine";
-        directors="Christopher Nolan";
-    } else if (movieName === "darkKnightRises") {
-        film_name = "Dark Knight Rises";
-        genre = "Action/Superhero";
-        film_desc = `It has been eight years since Batman (Christian Bale), in collusion with Commissioner Gordon (Gary Oldman), 
-                    vanished into the night. Assuming responsibility for the death of Harvey Dent, Batman sacrificed everything 
-                    for what he and Gordon hoped would be the greater good. However, the arrival of a cunning cat burglar (Anne Hathaway) 
-                    and a merciless terrorist named Bane (Tom Hardy) force Batman out of exile and into a battle he may not be able to win.`;
-        
-        actors_cast = "Christian Bale, Gary Oldman, Anne Hathaway, Tom Hardy";
-        directors="Christopher Nolan";
-    } else if (movieName === "interstellar") {
-        film_name = "Interstellar";
-        genre = "Sci-Fi/Space";
-        film_desc = `In Earth's future, a global crop blight and second Dust Bowl are slowly rendering the planet uninhabitable. Professor Brand (Michael Caine), 
-                    a brilliant NASA physicist, is working on plans to save mankind by transporting Earth's population to a new home via a wormhole. But first, 
-                    Brand must send former NASA pilot Cooper (Matthew McConaughey) and a team of researchers through the wormhole and across the galaxy to find out 
-                    which of three planets could be mankind's new home.`;
-        
-        actors_cast = "Matthew McConaughey, Anne Hathaway, Casey Affleck, Michael Caine";
-        directors="Christopher Nolan";
-    } else if (movieName === "inception") {
-        film_name = "Inception";
-        genre = "Sci-Fi/Thriller";
-        film_desc = `Dom Cobb (Leonardo DiCaprio) is a thief with the rare ability to enter people's dreams and steal their secrets from their subconscious. 
-                    His skill has made him a hot commodity in the world of corporate espionage but has also cost him everything he loves. Cobb gets a chance at 
-                    redemption when he is offered a seemingly impossible task: Plant an idea in someone's mind. If he succeeds, it will be the perfect crime, but 
-                    a dangerous enemy anticipates Cobb's every move.`;
-        
-        actors_cast = "Leonardo Dicaprio, Ellen Page, Joseph Gordon-Levitt, Cillian Murphy";
-        directors="Christopher Nolan";
-    } else {
-        film_name = "Tenet";
-        genre = "Sci-Fi/Thriller";
-        film_desc = `An action epic film evolving from the world of international espionage.`;
-        
-        actors_cast = "John David Washington, Robert Pattinson, Elizabeth Debicki, Michael Caine";
-        directors="Christopher Nolan";
+    componentDidUpdate() {
+        localStorage.setItem("dark", this.state.darkMode);
     }
 
-    const ratingChanged = (newRating) => {
+    componentDidMount() {
+        const isReturningUser = "dark" in localStorage;
+        const savedMode = localStorage.getItem("dark") === "true" ? true : false;
+
+        this.setState({darkMode: isReturningUser ? savedMode : false})
+
+		var film_id = "";
+
+        // Fetch the film object by  searching with film name passed on from the route URL
+        fetch("https://api.themoviedb.org/3/search/movie?" + new URLSearchParams({
+            api_key: process.env.REACT_APP_TMDB_API_KEY,
+            query: this.props.match.params.filmName
+        }))
+        .then(response => response.json())
+        .then((responseData) => {
+            for (let i = 0; i < responseData.results.length; i++) {
+                if (responseData.results[i].title === this.props.match.params.filmName) {
+                    this.setState({film: responseData.results[i]})
+                    film_id = responseData.results[i].id
+				}
+            }
+            // Fetch the list of cast members and staff starring in the movie
+            fetch(`https://api.themoviedb.org/3/movie/${film_id}/credits?` + new URLSearchParams({
+                api_key: process.env.REACT_APP_TMDB_API_KEY
+            }))
+            .then(response => response.json())
+            .then((responseData) => {
+                this.setState({cast: responseData.cast, directors: responseData.crew});
+            })
+            .catch(error => console.log(error));
+        })
+        .catch(error => console.log(error));
+
+        // Fetch the list of genres with their corresponding ids
+        fetch("https://api.themoviedb.org/3/genre/movie/list?" + new URLSearchParams({
+            api_key: process.env.REACT_APP_TMDB_API_KEY
+        }))
+        .then(response => response.json())
+        .then((responseData) => {
+            this.setState({listOfGenres: responseData.genres});
+        })
+        .catch(error => console.log(error));
+    }
+
+    toggleDarkMode = (darkMode) => {
+        this.setState({darkMode: darkMode})
+    }
+
+    ratingChanged = (newRating) => {
         alert("Your rating for this movie has been saved!");
     };
 
-    const onLanguageChange = (lang) => {
+    onLanguageChange = (lang) => {
         console.log(lang)
     }
 
-    return (
-        <div style={{backgroundColor: "black"}}>
-
-            <SearchBar onLanguageChange={onLanguageChange} />
-
-            <NavBar pageHeader="Movie Info"></NavBar>
-
-            <div className="ui container">
-                <div className="ui three column grid" style={{marginTop: "30px"}}>
-                    <MoviePoster featuredFilm={movieName}></MoviePoster>
-
-                    <div className="column">
-                        <div className="ui segment">
-                            <i class="film icon" style={{fontSize: "40px"}}></i><h1 style={{display: "inline"}}>{film_name}</h1>
-                            <h3>{genre}</h3>
-                            <br></br>
-                            <p>{film_desc}</p>
-
-                            <br></br>
-                            
-                            <i class="users icon" style={{fontSize: "20px"}}></i><h3 style={{display: "inline"}}> Cast of actors</h3>
-                            <p>{actors_cast}</p>
-                            <br></br>
-                            <i class="bullhorn icon" style={{fontSize: "20px"}}></i><h3 style={{display: "inline"}}> Director(s)</h3>
-                            <p>{directors}</p>
-                        </div>
-                    </div>
-
-                    <div className="column">
-                        <div className="ui segment">
-                            <div class="fluid massive ui animated fade yellow button" tabindex="0">
-                                <div class="visible content">Rating</div>
-                                <div class="hidden content" style={{marginLeft: "29%"}}>
-                                    <ReactStars count={5} onChange={ratingChanged} size={27} activeColor="#ffd700"></ReactStars>
-                                </div>
-                            </div>
-
-                            <br></br>
-                            <button class="fluid massive ui red button">Favourite</button>
-                            <br></br>
-                            <button class="fluid massive ui green button">Watched</button>
-                            <br></br>
-                            <button class="fluid massive ui blue button">Watch Later</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+    render() {
+        
+        var genre = "";
+        var film = "";
+        var description = "";
+        var castList = [];
+        var directors = [];
+        if (this.state.film && this.state.listOfGenres.length !== 0 && this.state.cast.length !== 0 && this.state.directors.length !== 0) {
+            const genreList = this.state.film.genre_ids;
+            const genre_id = genreList[0]
             
-        </div>
-    );
+            // loop through the list of genres and find the genre name using the matching genre id
+            for (let i in this.state.listOfGenres) {
+                if (this.state.listOfGenres[i].id === genre_id) {
+                    genre = this.state.listOfGenres[i].name;
+                }
+            }
+
+            for (let i = 0; i < 5; i++) {
+                if (this.state.cast[i] && this.state.cast[i].known_for_department === "Acting") {
+                    castList.push(this.state.cast[i].name)
+                }
+                if (i < 4) {
+                    castList.push(", ")
+                } 
+            }
+
+            for (let i in this.state.directors) {
+                if (this.state.directors[i].job === "Director") {
+                    directors.push(this.state.directors[i].name)
+                }
+            }
+
+            film = this.state.film
+
+            if (this.state.film.overview.length > 400) {
+                var diff = this.state.film.overview.length - 400
+                description = this.state.film.overview.slice(0, -diff)
+                description += "..."
+            }
+
+        }
+
+        var bgColor = this.state.darkMode ? "bgColorDark" : "bgColorLight";
+		var fontColor = this.state.darkMode ? "fontColorDark" : "fontColorLight";
+
+        return (
+            <div className={bgColor}>
+
+                <SearchBar onLanguageChange={this.onLanguageChange} toggleDarkMode={this.toggleDarkMode} />
+
+                <NavBar pageHeader="Movie Info" darkMode={this.state.darkMode} />
+
+                <div className="ui container">
+                    <div className="ui three column grid" style={{marginTop: "30px"}}>
+                        <MoviePoster featuredFilm={film} darkMode={this.state.darkMode} />
+
+                        <div className="column">
+                            <div className={`ui segment ${bgColor}`}>
+                                <i className={`film icon ${fontColor}`} style={{fontSize: "40px"}}></i><h1 className={fontColor} style={{display: "inline"}}>{film.title}</h1>
+                                <h3 className={fontColor}>{genre}</h3>
+                                <br></br>
+                                <p className={fontColor}>{description}</p>
+
+                                <br></br>
+                                
+                                <i className={`users icon ${fontColor}`} style={{fontSize: "20px"}}></i><h3 className={fontColor} style={{display: "inline"}}> Cast of actors</h3>
+                                <p className={fontColor}>{castList}</p>
+                                <br></br>
+                                <i className={`bullhorn icon ${fontColor}`} style={{fontSize: "20px"}}></i><h3 className={fontColor} style={{display: "inline"}}> Director(s)</h3>
+                                <p className={fontColor}>{directors}</p>
+                            </div>
+                        </div>
+
+                        <div className="column">
+                            <div className={`ui segment ${bgColor}`}>
+                                <div className="fluid massive ui animated fade yellow button" tabIndex="0">
+                                    <div className="visible content">Rating</div>
+                                    <div className="hidden content" style={{marginLeft: "29%"}}>
+                                        <ReactStars count={5} onChange={this.ratingChanged} size={27} activeColor="#ffd700" />
+                                    </div>
+                                </div>
+
+                                <br></br>
+                                <button className="fluid massive ui red button">Favourite</button>
+                                <br></br>
+                                <button className="fluid massive ui green button">Watched</button>
+                                <br></br>
+                                <button className="fluid massive ui blue button">Watch Later</button>
+                            </div>
+                        </div>
+
+                        <div style={{marginBottom: "100px"}}></div>
+
+                    </div>
+                </div>
+                
+            </div>
+        );
+    }
+    
 }
 
 export default MovieInfo;

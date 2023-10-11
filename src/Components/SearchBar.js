@@ -2,12 +2,13 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import "../Styles/Theme.css";
 import { Checkbox } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
 class SearchBar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {film: "", lang: "", theme: "Light"};
+        this.state = {film: "", lang: "", darkMode: false};
         
         // Current language switcher button labels (default is English)
         // ENGLISH VERSION
@@ -16,21 +17,30 @@ class SearchBar extends React.Component {
         this.searchBarLabel = "Film Search";
     }
 
-    toggleDarkMode = () => {
-        if (this.state.theme === "Light") {
-            this.setState({theme: "Dark"}, () => {
-                this.props.toggleDarkMode(this.state.theme)
-            })
+    componentDidUpdate() {
+        localStorage.setItem("dark", this.state.darkMode);
+    }
+
+    componentDidMount() {
+        const isReturningUser = "dark" in localStorage;
+        const savedMode = localStorage.getItem("dark") === "true" ? true : false;
+
+        if (isReturningUser) {
+            this.setState({darkMode: savedMode})
         } else {
-            this.setState({theme: "Light"}, () => {
-                this.props.toggleDarkMode(this.state.theme)
-            })
+            this.setState({darkMode: false})
         }
     }
 
+    toggleDarkMode = () => {
+        this.setState({darkMode: !this.state.darkMode}, () => {
+            this.props.toggleDarkMode(this.state.darkMode)
+        })
+    }
+
     onFormSubmit = (event) => {
-        event.preventDefault();
-        this.props.history.push('/foundFilm', this.state.film);
+		event.preventDefault();
+		this.props.history.push(`/foundFilm/${this.state.film}`, this.state.film);
     }
 
     changeLangStateToEnglish = () => {
@@ -58,15 +68,20 @@ class SearchBar extends React.Component {
     }
 
     render() {
+        var fontColor = this.state.darkMode ? "fontColorDark" : "fontColorLight";
         return (
-            <div className="ui container">
-                <h1 style={{ paddingTop: "30px", marginBottom: "0px", color: "#3d8bff" }}>Blox<span className={`fontColor${this.state.theme}`}>buster</span></h1>
+			<div className="ui container">
+				<Link to={{
+                    pathname: "/"}}>
+                    <h1 style={{ marginTop: "30px", marginBottom: "0px", color: "#3d8bff", display: "inline-block" }}>Blox<span className={fontColor}>buster</span></h1>
+                </Link>
 
-                <label className={`fontColor${this.state.theme}`} style={{float: "right", paddingLeft: "10px"}}>Dark Mode</label>
+                <label className={fontColor} style={{float: "right", paddingLeft: "10px", marginTop: "30px"}}>Dark Mode</label>
                 <Checkbox 
                     toggle
+                    checked={this.state.darkMode}
                     onClick={this.toggleDarkMode}
-                    style={{float: "right"}}
+                    style={{float: "right", marginTop: "30px"}}
                 />
 
                 <br></br>
@@ -79,7 +94,7 @@ class SearchBar extends React.Component {
                 <div className="search-bar ui segment" style={{backgroundColor: "#3d8bff"}}>
                     <form onSubmit={this.onFormSubmit} className="ui form">
                         <div className="field">
-                            <label>{this.searchBarLabel}</label>
+                            <label className={fontColor}>{this.searchBarLabel}</label>
                             <input type="text" value={this.state.film} onChange={(e) => {this.setState({film: e.target.value})}}/>
                         </div>
                     </form>

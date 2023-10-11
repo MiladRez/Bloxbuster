@@ -1,17 +1,17 @@
 /* Dark mode colour settings */
 .bgColorDark {
-    background-color: black;
+    background-color: black !important;
 }
 
 .fontColorDark {
-    color: white;
+    color: white !important;
 }
 
 /* Light mode colour settings */
 .bgColorLight {
-    background-color: white;
+    background-color: white !important;
 }
 
 .fontColorLight {
-    color: black;
+    color: black !important;
 }

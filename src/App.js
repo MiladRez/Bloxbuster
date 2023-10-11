@@ -1,9 +1,9 @@
 import React from 'react';
-import Films from './Films';
-import FoundfFilm from './FoundFilm';
-import MovieInfo from './MovieInfo';
-import Help from './Help';
-import WrongPage from './WrongPage';
+import Films from './Components/Films';
+import FoundFilm from './Components/FoundFilm';
+import MovieInfo from './Components/MovieInfo';
+import Help from './Components/Help';
+import WrongPage from './Components/WrongPage';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 class App extends React.Component {
@@ -16,8 +16,8 @@ class App extends React.Component {
                     <Switch>
                         <Route exact path='/' component={Films} />
                         <Route path='/films' component={Films} />
-                        <Route path='/foundFilm' component={FoundfFilm} />
-                        <Route path='/movieInfo' component={MovieInfo} />
+                        <Route path='/foundFilm/:searchTerm' component={FoundFilm} />
+                        <Route path='/movieInfo/:filmName' component={MovieInfo} />
                         <Route path='/help' component={Help} />
                         <Route component={WrongPage} />
                     </Switch>
