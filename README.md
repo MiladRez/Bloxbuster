@@ -2,6 +2,8 @@
 
 Web application that displays a library of new film releases and popular films and allows users to track, rate, and review the films they've watched.
 
+:point_right: [Live Demo](https://bloxbuster.netlify.app/)
+
 Created using:
 - ReactJS
 - React Router
