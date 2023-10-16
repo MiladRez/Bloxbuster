@@ -15,21 +15,21 @@ Features:
 - Bilingual (English/Spanish)
 - Streaming service style UI
 
-## Screenshots
+## Web App Screenshots 📸
 
-<h2 align="center">Homepage</h2>
-<img src=https://github.com/MiladRez/Bloxbuster/assets/29521979/f8aee0a5-a19b-4781-9013-02b01b36b7cd />
-
-<br></br>
-<br></br>
-
-<h2 align="center">Movie Info Page</h2>
-<img src=https://github.com/MiladRez/Bloxbuster/assets/29521979/0437c57b-57d5-4295-8bca-66ea65afc739 />
+<h2 align="center">Homepage 🏡</h2>
+<img src=https://github.com/MiladRez/Bloxbuster/assets/29521979/9ae75aed-e1da-471b-94d6-f720f34fdfec />
 
 <br></br>
 <br></br>
 
-<h2 align="center">Search Feature</h2>
-<img src=https://github.com/MiladRez/Bloxbuster/assets/29521979/32a08f27-e1a7-43cb-881d-f17571386d40 />
+<h2 align="center">Movie Info Page ℹ️</h2>
+<img src=https://github.com/MiladRez/Bloxbuster/assets/29521979/d271721b-b2a3-4b4b-bbb3-dea5e202c935 />
+
+<br></br>
+<br></br>
+
+<h2 align="center">Search Feature 🔍</h2>
+<img src=https://github.com/MiladRez/Bloxbuster/assets/29521979/3eab63e0-4199-4ed3-8e85-632688b89446 />
 
 <br></br>
